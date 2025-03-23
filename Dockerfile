@@ -1,14 +1,11 @@
-# Usa una imagen base oficial de OpenJDK (versión 17 en este caso)
-FROM openjdk:17-jdk-slim
+# Usa una imagen con Maven para construir el JAR
+FROM maven:3.8.6-amazoncorretto-17 AS build
+WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
 
-# Establece el directorio de trabajo dentro del contenedor
-WORKDIR /tablas_2
-
-# Copia el archivo JAR al contenedor
-COPY target/tablas-0.0.1-SNAPSHOT.jar app.jar
-
-# Expone el puerto en el que la aplicación escucha (puerto 8080 es común para Spring Boot)
-EXPOSE 8081
-
-# Comando para ejecutar la aplicación Java
-CMD ["java", "-jar", "app.jar"]
+# Usa la imagen ligera para ejecutar el JAR
+FROM amazoncorretto:17-alpine-jdk
+WORKDIR /app
+COPY --from=build /app/target/tablas-0.0.1-SNAPSHOT.jar app.jar
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

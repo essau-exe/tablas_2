@@ -8,7 +8,7 @@ WORKDIR /tablas_2
 COPY target/tablas-0.0.1-SNAPSHOT.jar app.jar
 
 # Expone el puerto en el que la aplicación escucha (puerto 8080 es común para Spring Boot)
-EXPOSE 8080
+EXPOSE 8081
 
 # Comando para ejecutar la aplicación Java
 CMD ["java", "-jar", "app.jar"]
